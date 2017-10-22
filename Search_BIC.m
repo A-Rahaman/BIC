@@ -1,0 +1,64 @@
+function Bic = Search_BIC(CMP_idx,components,simC,simS,start)
+
+% Search biclusters by building different subsets
+% Input:
+% components = The cell array of components where each component is a set of subjects
+% tempBic = temporary clusters; Its a cell array too
+% start = Starting point from where the subsets generation starts
+% Bic_S = Bicluster's Serial Number
+% by munna Dated: 10/4/2017
+
+%% Write bicluster
+
+global BicList;
+global BicId;
+global minSub;
+global minCmp;
+if(length(simS)>=minSub && length(simC)>=minCmp)
+    
+if(BicId == 1) % Checking for first cluster
+BicList{BicId,1} = simS;
+BicList{BicId,2} = simC;
+%fprintf("biCluster# %u is done\n",BicId);      
+BicId = BicId+1;
+else
+    v = BIC_validation(simS,simC);
+    if(v == 1)
+     %fprintf("Looking for biCluster# %u....\n",BicId);      
+     BicList{BicId,1} = simS;
+     BicList{BicId,2} = simC;
+     BicId = BicId+1;
+    end
+end
+end
+%% Generate Subsets of Components
+for i = start:length(CMP_idx)
+    if(components{CMP_idx(i),1}~= 0)
+    if(isempty(simC))
+        % Handle the base case!! Do something at first iteration of simCmp 
+        comm = [];
+        %fprintf("ENTERED IN fOR LOOP\n",i);
+        simC(end+1)= CMP_idx(i);
+        comm = union(comm,components{simC(end),1});
+        simC(end) = [];
+    else
+        comm = components{simC(1),1};
+        for j = 1:length(simC)
+        comm = intersect(comm,components{simC(j),1});
+        %fprintf("Secondary Iteration\n");
+        end
+    end
+    
+    simS = intersect(comm,components{CMP_idx(i),1});
+    if(length(simS)>=minSub)
+        %fprintf("Enough Subjects\n");
+        simC(end+1)= CMP_idx(i);
+        %fprintf("Enough components %u\n",length(simC));
+        Search_BIC(CMP_idx,components,simC,simS,i+1);
+        simC(end) = [];
+    end
+    end
+end
+%% End of recursion
+%
+end
