@@ -22,7 +22,7 @@ BicId = 1;
 initBicList();
 global BicList; 
 %global rsampled_BICList;
-rsampled_BICList = {};
+%rsampled_BICList = {};
 
 col_avg = zeros(sz(1));
 SetofCmps = [];
@@ -44,18 +44,15 @@ simS = [];
 SbmComps = [1 5 17 30 13 16 7 28 14]; % Big negative components from Navin
 permutations = perms(SbmComps);
 run = 0;
-for perm = 1:2 %length(permutaions) 
+%length(permutaions) 
+for perm = 1:2 
 if(length(SbmComps)>=minCmp)
 Search_BIC(run,permutations(perm,:),components,simC, simS,1); % Should send BicID
 run = 1;
 end
-%original_BicList = BicList;
-%rsampled_BICList{perm} = BicList;
+fprintf("Secondary Run\n");
 end
 fprintf("Initial iteration has been completed\n");
-%for rs = 1:length(rsampled_BICList)
-    
-%end
 
  %% Stability Check
 % numofSUBs=round(0.75*sz(1)); % From the paper the ratio is 0.62 (62% atleast)

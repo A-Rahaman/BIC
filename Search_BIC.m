@@ -1,12 +1,15 @@
-function Bic = Search_BIC(run, CMP_idx,components,simC,simS,start)
+function Bic = Search_BIC(run,CMP_idx,components,simC,simS,start)
 
 % Search biclusters by building different subsets of components
 % Input:
+% run = a flag that indicates whether it is first run (run = 0) or not (run =1) 
+% For the first run, Ovrlap_filter is > 80% for second it is > 90%
+% CMP_idx = Set of components. For example [1 3 5 8 9 6] 
 % components = The cell array of components where each component is a set of subjects
-% tempBic = temporary clusters; Its a cell array too
-% start = Starting point from where the subsets generation starts
-% Bic_S = Bicluster's Serial Number
-% by munna Dated: 10/4/2017
+% simC = set of components in a BIC
+% simS = set of subjects in a BIC
+% start = A tracker of the component that being used to create the subset 
+% by munna Dated: 4/Aug/2017
 
 %% Write bicluster
 
@@ -19,16 +22,16 @@ if(length(simS)>=minSub && length(simC)>=minCmp)
 if(BicId == 1) % Checking for first cluster
 BicList(BicId).subs = simS;
 BicList(BicId).comps = simC;
-BicList(BicId).frequecny = 1;
-%fprintf("biCluster# %u is done\n",BicId);      
+BicList(BicId).freq = 1;
+fprintf("biCluster# %u is done\n",BicId);      
 BicId = BicId+1;
 else
     v = BIC_validation(run,simS,simC);
     if(v == 1)
-     %fprintf("Looking for biCluster# %u....\n",BicId);      
+     fprintf("Looking for biCluster# %u....\n",BicId);      
      BicList(BicId).subs = simS;
      BicList(BicId).comps = simC;
-     BicList(BicId).frequecny = 1;
+     BicList(BicId).freq = 1;
      BicId = BicId+1;
     end
 end
@@ -55,7 +58,7 @@ for i = start:length(CMP_idx)
     if(length(simS)>=minSub)
         %fprintf("Enough Subjects\n");
         simC(end+1)= CMP_idx(i);
-        fprintf("Enough components %u\n",length(simC));
+        %fprintf("Enough components %u\n",length(simC));
         Search_BIC(run,CMP_idx,components,simC,simS,i+1);
         simC(end) = [];
     end
