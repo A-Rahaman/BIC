@@ -1,6 +1,6 @@
-function Bic = Search_BIC(CMP_idx,components,simC,simS,start)
+function Bic = Search_BIC(run, CMP_idx,components,simC,simS,start)
 
-% Search biclusters by building different subsets
+% Search biclusters by building different subsets of components
 % Input:
 % components = The cell array of components where each component is a set of subjects
 % tempBic = temporary clusters; Its a cell array too
@@ -17,16 +17,18 @@ global minCmp;
 if(length(simS)>=minSub && length(simC)>=minCmp)
     
 if(BicId == 1) % Checking for first cluster
-BicList{BicId,1} = simS;
-BicList{BicId,2} = simC;
+BicList(BicId).subs = simS;
+BicList(BicId).comps = simC;
+BicList(BicId).frequecny = 1;
 %fprintf("biCluster# %u is done\n",BicId);      
 BicId = BicId+1;
 else
-    v = BIC_validation(simS,simC);
+    v = BIC_validation(run,simS,simC);
     if(v == 1)
      %fprintf("Looking for biCluster# %u....\n",BicId);      
-     BicList{BicId,1} = simS;
-     BicList{BicId,2} = simC;
+     BicList(BicId).subs = simS;
+     BicList(BicId).comps = simC;
+     BicList(BicId).frequecny = 1;
      BicId = BicId+1;
     end
 end
@@ -53,12 +55,11 @@ for i = start:length(CMP_idx)
     if(length(simS)>=minSub)
         %fprintf("Enough Subjects\n");
         simC(end+1)= CMP_idx(i);
-        %fprintf("Enough components %u\n",length(simC));
-        Search_BIC(CMP_idx,components,simC,simS,i+1);
+        fprintf("Enough components %u\n",length(simC));
+        Search_BIC(run,CMP_idx,components,simC,simS,i+1);
         simC(end) = [];
     end
     end
 end
 %% End of recursion
-%
 end

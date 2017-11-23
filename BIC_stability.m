@@ -81,9 +81,12 @@ for i = 1:10
         Jacc_sub(end+1) = bicSub(end)*maxJacc_sub;
     end
     
-    up = (sum(Jacc_sub))+(sum(Jacc_cmp));
-    down = (sum(bicSub))+(sum(bicComp));
-    Ijacc(end+1)= up/down;
+    %up = (sum(Jacc_sub))+(sum(Jacc_cmp));
+    IjaccSub = (sum(Jacc_sub))/(sum(bicSub));
+    IjaccCmp = (sum(Jacc_cmp))/(sum(bicComp));
+    %down = (sum(bicSub))+(sum(bicComp));
+    Ijacc(end+1)= (IjaccSub+IjaccCmp)/2;
+    %up/down;
     fprintf("Ijacc: %f\n",Ijacc(end));
 end 
 avg_st = sum(Ijacc)/length(Ijacc);
