@@ -20,7 +20,10 @@ tol = input('What is the allowable percentage of overlap:\n');
 global BicId;
 BicId = 1;
 initBicList();
-global BicList; 
+global BicList;
+initListofBics();
+global ListofBics; 
+
 %global rsampled_BICList;
 %rsampled_BICList = {};
 
@@ -38,21 +41,46 @@ end
 %% Searching Biclusters
 simC = [];
 simS = [];
-% if(length(SetofCmps)>=minCmp)
-% Search_BIC(SetofCmps,components,simC, simS,1);
 
 SbmComps = [1 5 17 30 13 16 7 28 14]; % Big negative components from Navin
 permutations = perms(SbmComps);
-run = 0;
-%length(permutaions) 
-for perm = 1:2 
+%length(permutaions)
+
+% Initial Run 
 if(length(SbmComps)>=minCmp)
-Search_BIC(run,permutations(perm,:),components,simC, simS,1); % Should send BicID
-run = 1;
+Search_BIC(permutations(1,:),components,simC, simS,1);
+ListofBics = BicList;
+initBicList();
+BicId = 1;
 end
-fprintf("Secondary Run\n");
+
+% Secondary Run
+for perm = 2:2 
+if(length(SbmComps)>=minCmp)
+Search_BIC(permutations(perm,:),components,simC, simS,1); 
 end
-fprintf("Initial iteration has been completed\n");
+
+% Stability Checking 
+len = length(ListofBics);
+for b = 1: length(BicList)
+for j = 1:len % Becuase We don't wan to compare with new added Bics 
+    overlapped_sub = length(intersect(BicList(b).subs,ListofBics(j).subs));
+    Xpected_sub_overlap = (80/100) * length(ListofBics(j).subs);
+    overlapped_cmp = length(intersect(BicList(b).comps,ListofBics(j).comps));
+    Xpected_cmp_overlap = (80/100) * length(ListofBics(j).comps); 
+    if (overlapped_sub >= Xpected_sub_overlap && overlapped_cmp >= Xpected_cmp_overlap)
+    ListofBics(j).freq  = ListofBics(j).freq +1;
+    BicList(b).freq = -1;
+    end
+end
+if(BicList(b).freq ~= -1)
+ListofBics(length(ListofBics)+1) = BicList(b); 
+end
+end
+BicId = 1;
+initBicList();
+end
+%fprintf("Initial iteration has been completed\n");
 
  %% Stability Check
 % numofSUBs=round(0.75*sz(1)); % From the paper the ratio is 0.62 (62% atleast)

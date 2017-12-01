@@ -1,4 +1,4 @@
-function Bic = Search_BIC(run,CMP_idx,components,simC,simS,start)
+function Bic = Search_BIC(CMP_idx,components,simC,simS,start)
 
 % Search biclusters by building different subsets of components
 % Input:
@@ -26,9 +26,9 @@ BicList(BicId).freq = 1;
 fprintf("biCluster# %u is done\n",BicId);      
 BicId = BicId+1;
 else
-    v = BIC_validation(run,simS,simC);
+    v = BIC_validation(simS,simC);
     if(v == 1)
-     fprintf("Looking for biCluster# %u....\n",BicId);      
+     fprintf("Adding biCluster# %u to the list....\n",BicId);      
      BicList(BicId).subs = simS;
      BicList(BicId).comps = simC;
      BicList(BicId).freq = 1;
@@ -59,7 +59,7 @@ for i = start:length(CMP_idx)
         %fprintf("Enough Subjects\n");
         simC(end+1)= CMP_idx(i);
         %fprintf("Enough components %u\n",length(simC));
-        Search_BIC(run,CMP_idx,components,simC,simS,i+1);
+        Search_BIC(CMP_idx,components,simC,simS,i+1);
         simC(end) = [];
     end
     end
