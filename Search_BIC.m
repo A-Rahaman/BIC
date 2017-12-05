@@ -23,12 +23,12 @@ if(BicId == 1) % Checking for first cluster
 BicList(BicId).subs = simS;
 BicList(BicId).comps = simC;
 BicList(BicId).freq = 1;
-fprintf("biCluster# %u is done\n",BicId);      
+%fprintf("biCluster# %u is done\n",BicId);      
 BicId = BicId+1;
 else
     v = BIC_validation(simS,simC);
     if(v == 1)
-     fprintf("Adding biCluster# %u to the list....\n",BicId);      
+     %fprintf("Adding biCluster# %u to the list....\n",BicId);      
      BicList(BicId).subs = simS;
      BicList(BicId).comps = simC;
      BicList(BicId).freq = 1;

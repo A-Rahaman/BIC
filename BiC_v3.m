@@ -52,11 +52,13 @@ Search_BIC(permutations(1,:),components,simC, simS,1);
 ListofBics = BicList;
 initBicList();
 BicId = 1;
+fprintf("Permuted Run 1 Completed!: \n");
 end
 
 % Secondary Run
-for perm = 2:2 
+for perm = 2:length(permutations) 
 if(length(SbmComps)>=minCmp)
+fprintf("Permutation %u running... \n", perm);
 Search_BIC(permutations(perm,:),components,simC, simS,1); 
 end
 
@@ -80,7 +82,18 @@ end
 BicId = 1;
 initBicList();
 end
-%fprintf("Initial iteration has been completed\n");
+
+fprintf("All the biclusters has been enlisted\n");
+%% Get high frequency biclusters 
+StableBics = struct('subs',[],'comps',[],'freq',0); 
+totalRuns = length(permutations); % Total Permutations 
+num = 1;
+for i = 1:length(ListofBics)
+if(ListofBics(i).freq >= (0.30 * totalRuns))
+StableBics(num) = ListofBics(i);
+num = num+1;
+end
+end
 
  %% Stability Check
 % numofSUBs=round(0.75*sz(1)); % From the paper the ratio is 0.62 (62% atleast)
