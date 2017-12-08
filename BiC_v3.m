@@ -2,9 +2,7 @@
 clear
 clc
 %load T:\mialab\users\mrahaman\biclustering\BIC\Data\lwdings.mat;
-load /export/mialab/users/mrahaman/biclustering/BIC/Data/3dataset.mat;
-%lwdings = 
-%spm_read_vols(spm_vol('T:\mialab\users\mrahaman\example_sMRI_from_ICA\GIG_cobre_sub01_timecourses_ica_s1_.nii'));
+load /export/mialab/users/mrahaman/biclustering/BIC/Data/3dataset.mat; % Loadings
 sz = size(lwdings);
 len = sz(1);
 
@@ -93,6 +91,35 @@ if(ListofBics(i).freq >= (0.30 * totalRuns))
 StableBics(num) = ListofBics(i);
 num = num+1;
 end
+end
+
+%% Relating with Symptom Scores 
+Correlations = struct('Age',0,'Positive',0,'Negative',0,'General',0);
+load /export/mialab/users/mrahaman/biclustering/BIC/Data/PANSS_sitecorrected.mat; % Load PANSS
+load /export/mialab/users/mrahaman/biclustering/BIC/Data/DataInfo.mat; % Load sex(column3) and age(column2) 
+for i = 1:length(StableBics)
+mBicLps = [];
+
+BicAges = (DataInfo(StableBics(i).subs,2));
+PoScore = (PANS_pos(StableBics(i).subs));
+NeScore = (PANS_neg(StableBics(i).subs));
+GeScore = (PANS_gen(StableBics(i).subs));
+BicLps = lwdings(StableBics(i).subs,StableBics(i).comps);
+
+% BicAges = (DataInfo(ListofBics(i).subs,2));
+% PoScore = (PANS_pos(ListofBics(i).subs));
+% NeScore = (PANS_neg(ListofBics(i).subs));
+% GeScore = (PANS_gen(ListofBics(i).subs));
+% BicLps = lwdings(ListofBics(i).subs,ListofBics(i).comps);
+% Taking mean of each row 
+for j = 1:length(BicLps)
+mBicLps(end+1) = mean(BicLps(j,:));
+end
+% Correlations
+Correlations(i).Age = (corr(BicAges,mBicLps'));
+Correlations(i).Positive = (corr(PoScore,mBicLps'));
+Correlations(i).Negative = (corr(NeScore,mBicLps'));
+Correlations(i).General = (corr(GeScore,mBicLps'));
 end
 
  %% Stability Check
