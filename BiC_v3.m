@@ -1,4 +1,3 @@
-
 clear
 clc
 %load T:\mialab\users\mrahaman\biclustering\BIC\Data\lwdings.mat;
